@@ -4,6 +4,9 @@ from .models import Order
 
 
 class OrderFilter(FilterSet):
+    product_name = CharFilter(
+        field_name='product__name', lookup_expr='icontains', label='Product'
+    )
     start_date = DateFilter(
         field_name='date_created', lookup_expr='gte', label='Start date'
     )
@@ -15,4 +18,4 @@ class OrderFilter(FilterSet):
     class Meta:
         model = Order
         fields = '__all__'
-        exclude = ('customer', 'date_created')
+        exclude = ('product', 'customer', 'date_created')
