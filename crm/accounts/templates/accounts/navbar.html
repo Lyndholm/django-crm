@@ -19,4 +19,12 @@
       </ul>
     </div>
   </div>
+
+  {% if request.user.is_authenticated %}
+    <span class="hello-msg">Hello, {{request.user}} </span>
+    <span><a class="hello-msg" href="{% url 'logout' %}">Logout</a></span>
+  {% else %}
+    <span><a class="hello-msg" href="{% url 'login' %}">Login</a></span>
+  {% endif %}
+
 </nav>

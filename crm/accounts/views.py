@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.forms import inlineformset_factory
 from django.shortcuts import redirect, render
 
@@ -7,6 +9,7 @@ from .forms import CreateOrderForm, CreateUserForm
 from .models import Customer, Order, Product
 
 
+@login_required(login_url='login')
 def home(request):
     orders = Order.objects.all()
     customers = Customer.objects.all()
@@ -32,6 +35,7 @@ def products(request):
     return render(request, 'accounts/products.html', {'products': products})
 
 
+@login_required(login_url='login')
 def customer(request, customer_id):
     customer = Customer.objects.get(id=customer_id)
 
@@ -50,6 +54,7 @@ def customer(request, customer_id):
     return render(request, 'accounts/customer.html', context)
 
 
+@login_required(login_url='login')
 def create_order(request, customer_id):
     OrderFormSet = inlineformset_factory(
         Customer, Order, fields=('product', 'status'), extra=3
@@ -68,6 +73,7 @@ def create_order(request, customer_id):
     return render(request, 'accounts/order_form.html', context)
 
 
+@login_required(login_url='login')
 def update_order(request, order_id):
     order = Order.objects.get(id=order_id)
     form = CreateOrderForm(instance=order)
@@ -82,6 +88,7 @@ def update_order(request, order_id):
     return render(request, 'accounts/order_form.html', context)
 
 
+@login_required(login_url='login')
 def delete_order(request, order_id):
     order = Order.objects.get(id=order_id)
 
@@ -94,6 +101,9 @@ def delete_order(request, order_id):
 
 
 def register_page(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
     form = CreateUserForm()
 
     if request.method == 'POST':
@@ -111,5 +121,24 @@ def register_page(request):
 
 
 def login_page(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.info(request, 'Invalid credentials')
+
     context = {}
     return render(request, 'accounts/login.html', context)
+
+
+def logout_user(request):
+    logout(request)
+    return redirect(request.META.get('HTTP_REFERER'))
