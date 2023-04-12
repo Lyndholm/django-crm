@@ -59,8 +59,20 @@ def customer(request, customer_id):
     return render(request, 'accounts/customer.html', context)
 
 
+@login_required(login_url='login')
+@allowed_groups(groups=['customer'])
 def user_page(request):
-    context = {}
+    orders = request.user.customer.order_set.all()
+    total_orders = orders.count()
+    delivered = orders.filter(status='Delivered').count()
+    pending = orders.filter(status='Pending').count()
+
+    context = {
+        'orders': orders,
+        'total_orders': total_orders,
+        'delivered': delivered,
+        'pending': pending,
+    }
     return render(request, 'accounts/user.html', context)
 
 
@@ -125,6 +137,7 @@ def register_page(request):
 
             group = Group.objects.get(name='customer')
             user.groups.add(group)
+            Customer.objects.create(user=user, name=user.username)
 
             messages.success(request, f'Account was created for {username}')
 
