@@ -14,14 +14,18 @@
                 <table class="table">
                     <tr>
                         <th>Product</th>
+                        <th>Description</th>
                         <th>Category</th>
+                        <th>Tags</th>
                         <th>Price</th>
                     </tr>
                     
                     {% for product in products %}
                         <tr>
                             <td>{{product.name}}</td>
+                            <td>{{product.description|default_if_none:'Not provided'}}</td>
                             <td>{{product.category}}</td>
+                            <td>{{product.tags.all|join:", "}}</td>
                             <td>{{product.price}}</td>
                         </tr>
                         {% endfor %}
