@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./crm
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./crm/:/usr/src/crm-app
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env.dev
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=django-crm-admin
+      - POSTGRES_PASSWORD=crm_database_password
+      - POSTGRES_DB=django-crm-db
+
+volumes:
+  postgres_data:
