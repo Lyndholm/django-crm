@@ -30,13 +30,13 @@ def home(request):
         'delivered': delivered,
         'pending': pending,
     }
-    return render(request, 'accounts/dashboard.html', context)
+    return render(request, 'dashboard.html', context)
 
 
 @allowed_groups(groups=['admin'])
 def products(request):
     products = Product.objects.all()
-    return render(request, 'accounts/products.html', {'products': products})
+    return render(request, 'products.html', {'products': products})
 
 
 @login_required(login_url='login')
@@ -56,7 +56,7 @@ def customer(request, customer_id):
         'order_count': order_count,
         'orders_filter': orders_filter,
     }
-    return render(request, 'accounts/customer.html', context)
+    return render(request, 'customer.html', context)
 
 
 @login_required(login_url='login')
@@ -73,7 +73,7 @@ def user_page(request):
         'delivered': delivered,
         'pending': pending,
     }
-    return render(request, 'accounts/user.html', context)
+    return render(request, 'user.html', context)
 
 
 @login_required(login_url='login')
@@ -88,7 +88,7 @@ def account_settings(request):
             form.save()
 
     context = {'form': form}
-    return render(request, 'accounts/account_settings.html', context)
+    return render(request, 'account_settings.html', context)
 
 
 @login_required(login_url='login')
@@ -108,7 +108,7 @@ def create_order(request, customer_id):
             return redirect('/')
 
     context = {'formset': formset}
-    return render(request, 'accounts/order_form.html', context)
+    return render(request, 'order_form.html', context)
 
 
 @login_required(login_url='login')
@@ -124,7 +124,7 @@ def update_order(request, order_id):
             return redirect('/')
 
     context = {'form': form}
-    return render(request, 'accounts/order_form.html', context)
+    return render(request, 'order_form.html', context)
 
 
 @login_required(login_url='login')
@@ -137,7 +137,7 @@ def delete_order(request, order_id):
         return redirect('/')
 
     context = {'item': order}
-    return render(request, 'accounts/delete.html', context)
+    return render(request, 'delete.html', context)
 
 
 @unauthenticated_user
@@ -155,7 +155,7 @@ def register_page(request):
             return redirect('login')
 
     context = {'form': form}
-    return render(request, 'accounts/register.html', context)
+    return render(request, 'register.html', context)
 
 
 @unauthenticated_user
@@ -172,7 +172,7 @@ def login_page(request):
             messages.info(request, 'Invalid credentials')
 
     context = {}
-    return render(request, 'accounts/login.html', context)
+    return render(request, 'login.html', context)
 
 
 def logout_user(request):
